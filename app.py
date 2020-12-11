@@ -9,20 +9,24 @@ from elasticsearch import Elasticsearch
 import click
 
 
-ES_URL = 'https://search-dev-lab981-5wuk4tks57oddtcqm2qddbssqq.ap-northeast-2.es.amazonaws.com'
-INDEX = 'lab981-admin-*'
-# INDEX = 'lab981-admin-2020.06.01'
+ES_URL = 'localhost'
 FROM = 0
 CHUNK = 1000
 
-@click.command()
+
+@click.group()
+def cli():
+    pass
+
+
+@click.command(help='export json format from elasticsearch')
 @click.option('--host', '-h', type=click.STRING, required=True, default=ES_URL, help='host of elasticsearch(include port number)')
-@click.option('--index', '-i', type=click.STRING, required=True, default=INDEX, help='index name')
-@click.option('--output', '-o', type=click.STRING, required=True, help='ouput filename')
+@click.option('--index', '-i', type=click.STRING, required=True, help='index name')
+@click.option('--file', '-f', type=click.STRING, required=True, help='ouput filename')
 @click.option('--verbose', '-v', is_flag=True, help='verbose message')
-def export(host, index, output, verbose):
+def exporter(host, index, file, verbose):
     print('Elastic Hunter')
-    sdt = datetime.now()
+    start_dt = datetime.now()
     es = Elasticsearch(host)
     res = es.count(index=index)
     count = res['count']
@@ -32,7 +36,7 @@ def export(host, index, output, verbose):
     if verbose:
         pprint(es)
         pprint(es.info())
-    with open(output, 'w') as fp:
+    with open(file, 'w') as fp:
         for i in range(FROM, count, CHUNK):
             res = es.search(index=index, body={}, from_=i, size=CHUNK)
             pprint(res) if verbose else None
@@ -40,10 +44,45 @@ def export(host, index, output, verbose):
             for i in docs:
                 fp.write('%s\n' % json.dumps(i['_source']))
     es.close()
-    fdt = datetime.now()
-    print('elaspsed time: {}'.format(fdt-sdt))
+    finish_dt = datetime.now()
+    print('elaspsed time: {}'.format(finish_dt-start_dt))
     print("Done")
 
 
+@click.command(help='import json format into elasticsearch')
+@click.option('--host', '-h', type=click.STRING, required=True, default=ES_URL, help='host of elasticsearch(include port number)')
+@click.option('--index', '-i', type=click.STRING, required=True, help='index name')
+@click.option('--file', '-f', type=click.STRING, required=True, help='input filename')
+@click.option('--verbose', '-v', is_flag=True, help='verbose message')
+def importer(host, index, file, verbose):
+    print('Elastic Hunter')
+    start_dt = datetime.now()
+    es = Elasticsearch(host)
+    print('host name: {}'.format(host))
+    print('index name: {}'.format(index))
+    if verbose:
+        pprint(es)
+        pprint(es.info())
+    with open(file, 'r') as fp:
+        for line in fp.readlines():
+            body = json.loads(line)
+            res = es.index(index=index, body=body)
+            if verbose:
+                pprint(body)
+                pprint(res)
+    res = es.count(index=index)
+    count = res['count']
+    print('count of document on index: {}'.format(count))
+    es.close()
+    finish_dt = datetime.now()
+    print('elaspsed time: {}'.format(finish_dt-start_dt))
+    print("Done")
+
+
+cli.add_command(exporter)
+cli.add_command(importer)
+
+
 if __name__=='__main__':
-    export()
+    cli()
+
