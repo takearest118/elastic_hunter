@@ -3,6 +3,7 @@
 
 import time
 import json
+import glob
 from datetime import datetime
 from pprint import pprint
 
@@ -66,13 +67,18 @@ def importer(host, index, file, verbose):
     if verbose:
         pprint(es)
         pprint(es.info())
-    with open(file, 'r') as fp:
-        for line in fp.readlines():
-            body = json.loads(line)
-            res = es.index(index=index, body=body)
-            if verbose:
-                pprint(body)
-                pprint(res)
+    if file.endswith('*'):
+        files = glob.glob(file)
+    else:
+        files = [file]
+    for f in files:
+        with open(f, 'r') as fp:
+            for line in fp.readlines():
+                body = json.loads(line)
+                res = es.index(index=index, body=body)
+                if verbose:
+                    pprint(body)
+                    pprint(res)
     time.sleep(5)
     res = es.count(index=index)
     count = res['count']
