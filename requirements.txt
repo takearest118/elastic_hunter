@@ -1,0 +1,4 @@
+certifi==2020.12.5
+click==7.1.2
+elasticsearch==7.10.1
+urllib3==1.26.2
