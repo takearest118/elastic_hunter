@@ -1,4 +1,7 @@
-# elastic_hunter
+# elastic_hunter [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/takearest118/elastic_hunter)
+
+<img align="right" width="200" src="https://www.monsterhunter.com/world-iceborne/assets/img/common/top/monster_bg.jpg">
+
 You can export and import json files in Elasticsearch, manage data in elasticsearch by json format. Enjoy your data hunting.
 
 ## requirements
