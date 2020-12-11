@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+import time
 import json
 from datetime import datetime
 from pprint import pprint
@@ -70,6 +71,7 @@ def importer(host, index, file, verbose):
             if verbose:
                 pprint(body)
                 pprint(res)
+    time.sleep(5)
     res = es.count(index=index)
     count = res['count']
     print('count of document on index: {}'.format(count))
