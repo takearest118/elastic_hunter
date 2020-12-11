@@ -23,7 +23,7 @@ def cli():
 @click.command(help='export json format from elasticsearch')
 @click.option('--host', '-h', type=click.STRING, required=True, default=ES_URL, help='host of elasticsearch(include port number)')
 @click.option('--index', '-i', type=click.STRING, required=True, help='index name')
-@click.option('--file', '-f', type=click.STRING, required=True, help='ouput filename')
+@click.option('--file', '-f', type=click.STRING, help='ouput filename')
 @click.option('--verbose', '-v', is_flag=True, help='verbose message')
 def exporter(host, index, file, verbose):
     print('Elastic Hunter')
@@ -37,6 +37,8 @@ def exporter(host, index, file, verbose):
     if verbose:
         pprint(es)
         pprint(es.info())
+    if not file:
+        file = '{}.json'.format(index)
     with open(file, 'w') as fp:
         for i in range(FROM, count, CHUNK):
             res = es.search(index=index, body={}, from_=i, size=CHUNK)
