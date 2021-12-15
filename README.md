@@ -21,6 +21,7 @@ Options:
 Commands:
   exporter  export json format from elasticsearch
   importer  import json format into elasticsearch
+  scroll-exporter  export json format from elasticsearch by scroll api (for...
 
 ```
 
@@ -63,6 +64,26 @@ Options:
 
 sample usage
 > python3 app.py importer -h localhost -i test-index -f test.json
+
+### scroll exporter command
+
+```
+% python app.py scroll-exporter --help
+Usage: app.py scroll-exporter [OPTIONS]
+
+  export json format from elasticsearch by scroll api (for large index)
+
+Options:
+  -h, --host TEXT   host of elasticsearch(include port number)  [required]
+  -i, --index TEXT  index name  [required]
+  -f, --file TEXT   ouput filename
+  -v, --verbose     verbose message
+  --help            Show this message and exit.
+
+```
+
+sample usage
+> python3 app.py scroll-exporter -h localhost -i test-index -f test.json
 
 ## json file format
 

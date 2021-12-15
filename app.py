@@ -89,7 +89,7 @@ def importer(host, index, file, verbose):
     print("Done")
 
 
-@click.command(help='export(scroll) json format from elasticsearch')
+@click.command(help='export json format from elasticsearch by scroll api (for large index)')
 @click.option('--host', '-h', type=click.STRING, required=True, default=ES_URL, help='host of elasticsearch(include port number)')
 @click.option('--index', '-i', type=click.STRING, required=True, help='index name')
 @click.option('--file', '-f', type=click.STRING, help='ouput filename')
